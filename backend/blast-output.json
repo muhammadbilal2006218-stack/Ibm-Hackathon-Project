@@ -1,0 +1,31 @@
+{
+  "findings": [
+    "Function \"hashPassword\" in \"src/utils/crypto.js\" is imported by 2 files [risk: LOW] — a change here has a contained blast radius. Importers: src/routes/auth.js, tests/auth.test.js.",
+    "1 test file import this module, providing a safety net for refactoring: tests/auth.test.js.",
+    "1 non-test source file depend on this module: src/routes/auth.js.",
+    "\"hashPassword\" is referenced at 1 call site across the codebase [risk: LOW]."
+  ],
+  "sources": [
+    {
+      "type": "reference",
+      "file": "src/routes/auth.js",
+      "line": 5,
+      "kind": "import",
+      "isTest": false
+    },
+    {
+      "type": "reference",
+      "file": "src/routes/auth.js",
+      "line": 20,
+      "kind": "symbol",
+      "isTest": false
+    },
+    {
+      "type": "reference",
+      "file": "tests/auth.test.js",
+      "line": 5,
+      "kind": "import",
+      "isTest": true
+    }
+  ]
+}
