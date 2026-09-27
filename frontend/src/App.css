@@ -1,0 +1,317 @@
+/* ── Layout ──────────────────────────────────────────────────────────────── */
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  background: #1f2328;
+  color: #fff;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+}
+
+.app-header h1 {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.app-body {
+  flex: 1;
+  display: flex;
+  gap: 0;
+}
+
+/* ── Sidebar ────────────────────────────────────────────────────────────── */
+.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  background: #fff;
+  border-right: 1px solid #e5e7eb;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Content area ────────────────────────────────────────────────────────── */
+.content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+/* ── Error banner ────────────────────────────────────────────────────────── */
+.error-banner {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+/* ── FilePicker ────────────────────────────────────────────────────────── */
+.picker-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.picker-section label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #57606a;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.picker-section select,
+.picker-section input[type="text"] {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #1f2328;
+  background: #fff;
+  outline: none;
+}
+
+.picker-section select:focus,
+.picker-section input[type="text"]:focus {
+  border-color: #3b82d4;
+  box-shadow: 0 0 0 2px rgba(59, 130, 212, 0.15);
+}
+
+.btn-analyze {
+  width: 100%;
+  padding: 9px 0;
+  background: #3b82d4;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  transition: background 0.15s;
+}
+
+.btn-analyze:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.btn-analyze:disabled {
+  background: #93c5fd;
+  cursor: not-allowed;
+}
+
+/* ── Tabs ─────────────────────────────────────────────────────────────────── */
+.tabs-bar {
+  display: flex;
+  gap: 2px;
+  border-bottom: 2px solid #e5e7eb;
+  margin-bottom: 20px;
+}
+
+.tab-btn {
+  padding: 8px 18px;
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: #57606a;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.tab-btn:hover {
+  color: #1f2328;
+}
+
+.tab-btn.active {
+  color: #3b82d4;
+  border-bottom-color: #3b82d4;
+  font-weight: 600;
+}
+
+/* ── Report ────────────────────────────────────────────────────────────── */
+.report-meta {
+  font-size: 12px;
+  color: #57606a;
+  margin-bottom: 16px;
+}
+
+.report-meta strong {
+  color: #1f2328;
+}
+
+.finding-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.finding-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.finding-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #1f2328;
+  margin-bottom: 8px;
+}
+
+.source-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-family: ui-monospace, Consolas, monospace;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.badge-commit {
+  background: #ede9fe;
+  color: #5b21b6;
+  border: 1px solid #ddd6fe;
+}
+
+.badge-ref {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.badge-test {
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+}
+
+.badge-risk-low    { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+.badge-risk-medium { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+.badge-risk-high   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+/* ── Risk score block ──────────────────────────────────────────────────── */
+.risk-block {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.risk-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #57606a;
+}
+
+/* ── Suggested test ────────────────────────────────────────────────────── */
+.suggested-test {
+  background: #1f2328;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-top: 12px;
+}
+
+.suggested-test pre {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  color: #e5e7eb;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.suggested-test-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #57606a;
+  margin-bottom: 8px;
+}
+
+/* ── Loading spinner ─────────────────────────────────────────────────────── */
+.spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  color: #57606a;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.spinner-ring {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #3b82d4;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Empty state ──────────────────────────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  color: #57606a;
+  gap: 8px;
+}
+
+.empty-state-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1f2328;
+}
+
+.empty-state-sub {
+  font-size: 13px;
+}
+
+.section-header {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: #57606a;
+  margin-bottom: 12px;
+}
+
+.no-data {
+  font-size: 13px;
+  color: #57606a;
+  padding: 12px 0;
+}

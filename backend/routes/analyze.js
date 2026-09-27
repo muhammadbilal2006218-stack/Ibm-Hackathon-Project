@@ -2,72 +2,74 @@
  * /api/analyze  –  Route handler
  *
  * GET  /api/analyze   → readiness probe
- * POST /api/analyze   → dispatch to one or more agents
+ * POST /api/analyze   → runs history, blastRadius, testAgent, then evidenceAgent
  *
- * Expected POST body (all fields optional except `filePath`):
+ * Expected POST body:
  * {
- *   "filePath":     "src/auth/handler.js",   // required
- *   "agents":       ["history","blastRadius"], // default: both
- *   "functionName": "validateToken",          // optional scope
- *   "lineStart":    42,                       // optional scope
- *   "lineEnd":      68                        // optional scope
+ *   "filePath":     "sample-repo/src/routes/auth.js",  // required
+ *   "functionName": "comparePassword"                   // optional
  * }
  */
 
 "use strict";
 
+const path = require("path");
 const { Router } = require("express");
-const historyAgent = require("../agents/history");
+
+const historyAgent     = require("../agents/history");
 const blastRadiusAgent = require("../agents/blastRadius");
+const testAgent        = require("../agents/testAgent");
+const evidenceAgent    = require("../agents/evidenceAgent");
 
 const router = Router();
 
-// Agent registry – add new agents here as they are implemented.
-const AGENTS = {
-  history: historyAgent,
-  blastRadius: blastRadiusAgent,
-};
-
 // ── GET /api/analyze ──────────────────────────────────────────────────────────
 router.get("/analyze", (_req, res) => {
-  res.json({ message: "Analyze endpoint ready for agent integration" });
+  res.json({ message: "Analyze endpoint ready" });
 });
 
 // ── POST /api/analyze ─────────────────────────────────────────────────────────
 router.post("/analyze", async (req, res, next) => {
   try {
-    const { filePath, agents, functionName, lineStart, lineEnd } = req.body;
+    const { filePath, functionName } = req.body;
 
     if (!filePath || typeof filePath !== "string") {
       return res.status(400).json({ error: "`filePath` (string) is required." });
     }
 
-    // Determine which agents to run (default: all registered agents).
-    const requestedAgents =
-      Array.isArray(agents) && agents.length > 0
-        ? agents
-        : Object.keys(AGENTS);
-
-    const unknownAgents = requestedAgents.filter((a) => !AGENTS[a]);
-    if (unknownAgents.length > 0) {
-      return res.status(400).json({
-        error: `Unknown agent(s): ${unknownAgents.join(", ")}. Valid agents: ${Object.keys(AGENTS).join(", ")}`,
-      });
-    }
+    // ── Resolve the file to an absolute path ──────────────────────────────────
+    // filePath may be absolute or relative to the backend working directory.
+    const absoluteTarget = path.isAbsolute(filePath)
+      ? filePath
+      : path.resolve(process.cwd(), filePath);
 
     const options = {
-      ...(functionName != null && { functionName }),
-      ...(lineStart != null && { lineStart: Number(lineStart) }),
-      ...(lineEnd != null && { lineEnd: Number(lineEnd) }),
+      ...(functionName ? { functionName } : {}),
     };
 
-    // Run all requested agents concurrently.
-    const results = await Promise.all(
-      requestedAgents.map(async (agentName) => {
-        const result = await AGENTS[agentName].analyze(filePath, options);
-        return { agent: agentName, ...result };
-      })
-    );
+    // ── Run history, blastRadius, testAgent concurrently ──────────────────────
+    const [historyResult, blastResult, testResult] = await Promise.all([
+      historyAgent.analyze(absoluteTarget, options),
+      blastRadiusAgent.analyze(absoluteTarget, options),
+      testAgent.analyze(absoluteTarget, options),
+    ]);
+
+    // ── Compile evidence report ───────────────────────────────────────────────
+    const evidenceReport = evidenceAgent.compile({
+      filePath,
+      functionName,
+      history:     historyResult,
+      blastRadius: blastResult,
+      testAgent:   testResult,
+    });
+
+    // ── Shape the response ────────────────────────────────────────────────────
+    const results = [
+      { agent: "history",     ...historyResult },
+      { agent: "blastRadius", ...blastResult   },
+      { agent: "testAgent",   ...testResult    },
+      { agent: "evidence",    ...evidenceReport },
+    ];
 
     return res.json({
       filePath,
